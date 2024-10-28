@@ -30,7 +30,7 @@ const examples = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  console.log(pathname);
+
   return (
     <aside className="w-64 bg-muted p-4 hidden md:block">
       <h2 className="font-semibold mb-4">Examples</h2>
