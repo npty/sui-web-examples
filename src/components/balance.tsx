@@ -2,7 +2,7 @@
 
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { SuiClient } from "@mysten/sui/client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { requestSuiFromFaucetV0 } from "@mysten/sui/faucet";
 import { localUrl, localFaucet } from "@/constants";
@@ -13,15 +13,17 @@ export function Balance() {
   const [balance, setBalance] = useState<string>("0");
   const account = useCurrentAccount();
 
-  async function updateBalance() {
+  const updateBalance = useCallback(async () => {
     if (account) {
       const _balance = await client.getBalance({
         owner: account.address,
       });
 
+      if (!_balance?.totalBalance) return;
+
       setBalance(_balance.totalBalance);
     }
-  }
+  }, [account, setBalance]);
 
   useEffect(() => {
     updateBalance();
@@ -42,7 +44,7 @@ export function Balance() {
     <div className="flex flex-col">
       <div className="flex space-x-2">
         <p className="font-bold text-md">Balance</p>
-        <p className="text-md">{BigInt(balance) / BigInt(1e9)}</p>
+        <p className="text-md">{balance}</p>
       </div>
       <div className="flex space-x-2 items-center mt-2">
         <p className="font-bold text-md">Request Faucet</p>

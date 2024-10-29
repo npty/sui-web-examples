@@ -1,4 +1,5 @@
 import { Transaction } from "@mysten/sui/transactions";
+import { fromHex } from "@mysten/sui/utils";
 
 export async function getDeployTokenTx(
   sender: string,
@@ -6,7 +7,7 @@ export async function getDeployTokenTx(
   symbol: string,
   decimals: number,
 ): Promise<Transaction> {
-  const response = await fetch(`/deploy-token`, {
+  const response = await fetch(`/api/deploy-token`, {
     method: "POST",
     body: JSON.stringify({
       sender,
@@ -20,5 +21,5 @@ export async function getDeployTokenTx(
 
   const txBytes = json.data.txBytes;
 
-  return Transaction.from(txBytes);
+  return Transaction.from(fromHex(txBytes));
 }

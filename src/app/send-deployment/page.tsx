@@ -24,6 +24,7 @@ export default function SendDeployment() {
       "TT",
       9,
     );
+    console.log("transaction", transaction);
     signAndExecute(transaction);
   }
 

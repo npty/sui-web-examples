@@ -1,4 +1,4 @@
-import { useSignAndExecuteTransaction } from "@mysten/dapp-kit";
+import { useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
 
 export type SignAndExecuteTransactionOptions = {
@@ -7,7 +7,22 @@ export type SignAndExecuteTransactionOptions = {
 };
 
 export function useSuiTransaction() {
-  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const client = useSuiClient();
+  const { mutate: signAndExecuteTransaction } = useSignAndExecuteTransaction({
+    execute: async ({ bytes, signature }) => {
+      const response = await client.executeTransactionBlock({
+        signature,
+        transactionBlock: bytes,
+        options: {
+          showObjectChanges: true,
+          showEvents: true,
+          showEffects: true,
+          showRawEffects: true,
+        },
+      });
+      return response;
+    },
+  });
 
   const signAndExecute = async (
     tx: Transaction,
@@ -21,7 +36,7 @@ export function useSuiTransaction() {
       },
       {
         onSuccess: (result) => {
-          console.log(result.effects);
+          console.log(result);
           console.log("Transaction executed successfully", result.digest);
           onSuccess?.(result);
         },

@@ -16,5 +16,7 @@ export async function POST(request: Request) {
     }),
   });
 
-  return response.json();
+  const responseBody = await response.json();
+
+  return Response.json(responseBody);
 }

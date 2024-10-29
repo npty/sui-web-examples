@@ -5,6 +5,7 @@ import { ListTodo } from "lucide-react";
 
 export type Action = {
   name: string;
+  onClick: () => void;
 };
 
 export type ActionProps = {
@@ -26,7 +27,7 @@ export function ActionList({ className, actions }: ActionProps) {
             className="flex items-center justify-between p-4 bg-card rounded-lg shadow"
           >
             <span>{action.name}</span>
-            <Button>Execute</Button>
+            <Button onClick={action.onClick}>Execute</Button>
           </div>
         ))}
       </div>
