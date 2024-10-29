@@ -7,6 +7,8 @@ import { useCurrentAccount } from "@mysten/dapp-kit";
 import { SuiTransactionBlockResponse } from "@mysten/sui/client";
 import { useStep } from "usehooks-ts";
 
+const transactionType = "send-deployment";
+
 export default function SendDeployment() {
   const account = useCurrentAccount();
   const [currentStep, helpers] = useStep(3);
@@ -39,7 +41,7 @@ export default function SendDeployment() {
     addTransaction({
       digest: result.digest,
       label: "Deploy Token",
-      category: "send-token",
+      category: transactionType,
       changesObjects: result.objectChanges ?? [],
     });
 
@@ -48,7 +50,9 @@ export default function SendDeployment() {
 
   return (
     <MainSection
-      transactions={transactions.filter((tx) => tx.category === "send-token")}
+      transactions={transactions.filter(
+        (tx) => tx.category === transactionType,
+      )}
       actions={actions.map((action, index) => ({
         ...action,
         complete: index < currentStep - 1,

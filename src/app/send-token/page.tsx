@@ -1,9 +1,8 @@
 "use client";
 
 import { MainSection } from "@/components/main-section";
-import { Transaction } from "@/components/transaction-list";
+import { useAppStore } from "@/store";
 
-const transactions: Transaction[] = [];
 
 const actions = [
   { name: "Send Token", onClick: () => console.log("Action 1 clicked") },
@@ -12,5 +11,7 @@ const actions = [
 ];
 
 export default function SendToken() {
-  return <MainSection transactions={transactions} actions={actions} />;
+  const transactions = useAppStore((state) => state.transactions);
+
+  return <MainSection transactions={transactions.filter((tx) => tx.category === "send-token")} actions={actions} />;
 }

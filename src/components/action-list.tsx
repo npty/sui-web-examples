@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { ListTodo } from "lucide-react";
-import { StatusStamp } from "./ui/status-stamp";
 import { cn } from "@/lib/utils";
 import { StampOverlay } from "./ui/stamp-overlay";
 
@@ -26,22 +25,24 @@ export function ActionList({ className, actions }: ActionProps) {
       </h2>
       <div className="space-y-4">
         {actions.map((action, index) => (
-          <div
-            key={index}
-            className="relative flex items-center justify-between p-4 bg-card rounded-lg shadow"
-          >
-            <p
-              className={cn({
-                "text-primary font-bold": true,
-                "opacity-50": action.complete,
-              })}
-            >
-              {action.name}
+          <div className="flex gap-4 items-center" key={index}>
+            <p className="w-8 h-8 flex font-bold text-black rounded-full bg-gray-100 border-blue-500 text-center justify-center items-center">
+              {index + 1}
             </p>
-            <Button onClick={action.onClick} disabled={!!action.complete}>
-              Execute
-            </Button>
-            <StampOverlay isActive={action.complete} />
+            <div className="relative flex items-center flex-1 justify-between p-4 bg-card rounded-lg shadow">
+              <p
+                className={cn({
+                  "text-primary font-bold": true,
+                  "opacity-50": action.complete,
+                })}
+              >
+                {action.name}
+              </p>
+              <Button onClick={action.onClick} disabled={!!action.complete}>
+                Execute
+              </Button>
+              <StampOverlay isActive={action.complete} />
+            </div>
           </div>
         ))}
       </div>
