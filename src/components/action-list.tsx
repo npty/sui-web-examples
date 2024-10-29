@@ -2,10 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { ListTodo } from "lucide-react";
+import { StatusStamp } from "./ui/status-stamp";
+import { cn } from "@/lib/utils";
+import { StampOverlay } from "./ui/stamp-overlay";
 
 export type Action = {
   name: string;
   onClick: () => void;
+  complete?: boolean;
 };
 
 export type ActionProps = {
@@ -24,10 +28,20 @@ export function ActionList({ className, actions }: ActionProps) {
         {actions.map((action, index) => (
           <div
             key={index}
-            className="flex items-center justify-between p-4 bg-card rounded-lg shadow"
+            className="relative flex items-center justify-between p-4 bg-card rounded-lg shadow"
           >
-            <span>{action.name}</span>
-            <Button onClick={action.onClick}>Execute</Button>
+            <p
+              className={cn({
+                "text-primary font-bold": true,
+                "opacity-50": action.complete,
+              })}
+            >
+              {action.name}
+            </p>
+            <Button onClick={action.onClick} disabled={!!action.complete}>
+              Execute
+            </Button>
+            <StampOverlay isActive={action.complete} />
           </div>
         ))}
       </div>

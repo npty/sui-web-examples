@@ -1,5 +1,6 @@
+import { Transaction } from "@/store";
 import { Action, ActionList } from "./action-list";
-import { Transaction, TransactionList } from "./transaction-list";
+import { TransactionList } from "./transaction-list";
 
 export type MainSectionProps = {
   transactions: Transaction[];

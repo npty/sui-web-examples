@@ -1,14 +1,18 @@
 "use client";
 import { MainSection } from "@/components/main-section";
-import { Transaction } from "@/components/transaction-list";
 import { useSuiTransaction } from "@/hooks/useSuiTransaction";
+import { useAppStore } from "@/store";
 import { getDeployTokenTx } from "@/transactions/deploy-token";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-
-const transactions: Transaction[] = [];
+import { SuiTransactionBlockResponse } from "@mysten/sui/client";
+import { useStep } from "usehooks-ts";
 
 export default function SendDeployment() {
   const account = useCurrentAccount();
+  const [currentStep, helpers] = useStep(3);
+  const addTransaction = useAppStore((state) => state.addTransaction);
+  const transactions = useAppStore((state) => state.transactions);
+
   const { signAndExecute } = useSuiTransaction();
 
   const actions = [
@@ -18,15 +22,37 @@ export default function SendDeployment() {
 
   async function handleDeployToken() {
     if (!account) return;
+
     const transaction = await getDeployTokenTx(
       account.address,
       "Test Token",
       "TT",
       9,
     );
-    console.log("transaction", transaction);
-    signAndExecute(transaction);
+
+    signAndExecute(transaction, {
+      onSuccess: updateTransaction,
+    });
   }
 
-  return <MainSection transactions={transactions} actions={actions} />;
+  function updateTransaction(result: SuiTransactionBlockResponse) {
+    addTransaction({
+      digest: result.digest,
+      label: "Deploy Token",
+      category: "send-token",
+      changesObjects: result.objectChanges ?? [],
+    });
+
+    helpers.goToNextStep();
+  }
+
+  return (
+    <MainSection
+      transactions={transactions.filter((tx) => tx.category === "send-token")}
+      actions={actions.map((action, index) => ({
+        ...action,
+        complete: index < currentStep - 1,
+      }))}
+    />
+  );
 }
