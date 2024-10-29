@@ -1,16 +1,19 @@
 "use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-export type Transaction = {
-  id: string;
-  status: "Completed" | "Pending" | "Failed";
-};
+import { Transaction } from "@/store";
 
 export type TransactionProps = {
   className?: string;
   transactions: Transaction[];
 };
+
+const explorerUrl = "https://sui.europarkland.online/txblock";
+const customParam = "network=https%3A%2F%2Fsui-node.europarkland.online";
+
+function getExplorerUrl(tx: Transaction) {
+  return `${explorerUrl}?tx=${tx.digest}?${customParam}`;
+}
 
 export function TransactionList({ className, transactions }: TransactionProps) {
   return (
@@ -20,12 +23,8 @@ export function TransactionList({ className, transactions }: TransactionProps) {
         <div className="space-y-4">
           {transactions.map((tx, index) => (
             <div key={index} className="p-4 bg-card rounded-lg shadow">
-              <div className="font-mono text-sm">{tx.id}</div>
-              <div
-                className={`text-sm ${tx.status === "Completed" ? "text-green-500" : tx.status === "Failed" ? "text-red-500" : "text-yellow-500"}`}
-              >
-                {tx.status}
-              </div>
+              <div className="font-mono text-sm">{tx.digest}</div>
+              <div className={`text-green-500"`}>{getExplorerUrl(tx)}</div>
             </div>
           ))}
         </div>
