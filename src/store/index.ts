@@ -17,13 +17,50 @@ export type Transaction = {
 export type Store = {
   transactions: Transaction[];
   addTransaction: (transaction: Transaction) => void;
+  chainConfig?: ChainConfig;
+  setChainConfig: (chainConfig: ChainConfig) => void;
 };
+
+export type ContractObject = {
+  address: string;
+  objects?: Record<string, string>;
+  domainSeparator?: string;
+  operator?: string;
+  minimumRotationDelay?: number;
+}
+
+export type ChainContracts = {
+  AxelarGateway: ContractObject;
+  Utils: ContractObject;
+  VersionControl: ContractObject;
+  GasService: ContractObject;
+  Abi: ContractObject;
+  RelayerDiscovery: ContractObject;
+  ITS: ContractObject;
+  Example: ContractObject;
+}
+
+export type ChainConfig = {
+  name: string;
+  axelarId: string;
+  networkType: string;
+  tokenSymbol: string;
+  rpc: string;
+  faucetUrl: string;
+  contracts: ChainContracts;
+}
 
 export const useAppStore = create<Store>((set) => ({
   transactions: [],
   addTransaction: (transaction: Transaction) => {
     set((state) => ({
       transactions: [...state.transactions, transaction],
+    }));
+  },
+  chainConfig: undefined,
+  setChainConfig: (chainConfig: ChainConfig) => {
+    set(() => ({
+      chainConfig,
     }));
   },
 }));

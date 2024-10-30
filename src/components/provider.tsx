@@ -12,6 +12,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const { networkConfig } = createNetworkConfig({
   localnet: { url: "https://sui-node.europarkland.online" },
   mainnet: { url: getFullnodeUrl("mainnet") },
+  testnet: { url: getFullnodeUrl("testnet") },
 });
 const queryClient = new QueryClient();
 

@@ -1,4 +1,4 @@
-const suiServiceUrl = process.env.SUI_SERVICE_URL;
+import { suiServiceUrl } from "@/constants/index";
 
 export async function POST(request: Request) {
   const { sender, name, symbol, decimals } = await request.json();

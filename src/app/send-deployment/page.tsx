@@ -1,9 +1,11 @@
 "use client";
 import { MainSection } from "@/components/main-section";
+import { useChainConfig } from "@/hooks/useChainConfig";
 import { useSuiTransaction } from "@/hooks/useSuiTransaction";
 import { useAppStore } from "@/store";
 import { getDeployTokenTx } from "@/transactions/deploy-token";
-import { useCurrentAccount } from "@mysten/dapp-kit";
+import { getRegisterTokenTx } from "@/transactions/register-token";
+import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
 import { SuiTransactionBlockResponse } from "@mysten/sui/client";
 import { useStep } from "usehooks-ts";
 
@@ -11,16 +13,41 @@ const transactionType = "send-deployment";
 
 export default function SendDeployment() {
   const account = useCurrentAccount();
+  const suiClient = useSuiClient();
   const [currentStep, helpers] = useStep(3);
   const addTransaction = useAppStore((state) => state.addTransaction);
   const transactions = useAppStore((state) => state.transactions);
+  const chainConfig = useChainConfig();
 
   const { signAndExecute } = useSuiTransaction();
 
   const actions = [
     { name: "Deploy Token", onClick: handleDeployToken },
-    { name: "Send Token", onClick: () => console.log("Action 2 clicked") },
+    { name: "Register Token", onClick: handleRegisterToken },
+    {
+      name: "Send Token Deployment",
+      onClick: () => console.log("Action 2 clicked"),
+    },
   ];
+
+  async function handleRegisterToken() {
+    if (!account) return;
+    if (!chainConfig) return;
+
+    const transaction = await getRegisterTokenTx(
+      suiClient,
+      account.address,
+      chainConfig,
+      "TT",
+      transactions,
+    );
+
+    if (!transaction) return;
+
+    signAndExecute(transaction, {
+      onSuccess: updateTransaction,
+    });
+  }
 
   async function handleDeployToken() {
     if (!account) return;
@@ -40,7 +67,7 @@ export default function SendDeployment() {
   function updateTransaction(result: SuiTransactionBlockResponse) {
     addTransaction({
       digest: result.digest,
-      label: "Deploy Token",
+      label: actions[currentStep - 1].name,
       category: transactionType,
       changesObjects: result.objectChanges ?? [],
     });
