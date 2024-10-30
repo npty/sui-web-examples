@@ -1,5 +1,6 @@
 "use client";
 
+import { rpcUrl } from "@/constants";
 import {
   createNetworkConfig,
   SuiClientProvider,
@@ -10,7 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 // Config options for the networks you want to connect to
 const { networkConfig } = createNetworkConfig({
-  localnet: { url: "https://sui-node.europarkland.online" },
+  localnet: { url: rpcUrl },
   mainnet: { url: getFullnodeUrl("mainnet") },
   testnet: { url: getFullnodeUrl("testnet") },
 });

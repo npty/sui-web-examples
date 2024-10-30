@@ -1,7 +1,6 @@
 "use client";
 import { MainSection } from "@/components/main-section";
-
-import { Transaction } from "@/components/transaction-list";
+import { Transaction } from "@/store";
 
 const transactions: Transaction[] = [];
 

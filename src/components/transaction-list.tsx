@@ -1,6 +1,7 @@
 "use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { explorerUrl, explorerUrlExt } from "@/constants";
 import { Transaction } from "@/store";
 import Link from "next/link";
 
@@ -9,11 +10,10 @@ export type TransactionProps = {
   transactions: Transaction[];
 };
 
-const explorerUrl = "https://sui.europarkland.online/txblock";
-const customParam = "network=https%3A%2F%2Fsui-node.europarkland.online";
-
 function getExplorerUrl(tx: Transaction) {
-  return `${explorerUrl}/${tx.digest}?${customParam}`;
+  if (!explorerUrl) return "https://suiscan.xyz/testnet/tx";
+  if (!explorerUrlExt) return `${explorerUrl}/${tx.digest}`;
+  return `${explorerUrl}/${tx.digest}?${explorerUrlExt}`;
 }
 
 export function TransactionList({ className, transactions }: TransactionProps) {

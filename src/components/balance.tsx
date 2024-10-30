@@ -5,9 +5,9 @@ import { SuiClient } from "@mysten/sui/client";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { requestSuiFromFaucetV0 } from "@mysten/sui/faucet";
-import { localUrl, localFaucet } from "@/constants";
+import { rpcUrl, faucetUrl } from "@/constants";
 
-const client = new SuiClient({ url: localUrl });
+const client = new SuiClient({ url: rpcUrl });
 
 export function Balance() {
   const [balance, setBalance] = useState<string>("0");
@@ -33,7 +33,7 @@ export function Balance() {
     if (!account) return;
 
     await requestSuiFromFaucetV0({
-      host: localFaucet,
+      host: faucetUrl,
       recipient: account.address,
     });
 
