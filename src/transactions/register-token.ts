@@ -26,10 +26,9 @@ export async function getRegisterTokenTx(
   const packageId = publishedObject?.packageId;
   const tokenType = `${packageId}::${symbol.toLowerCase()}::${symbol.toUpperCase()}`;
 
-  const [TreasuryCap, Metadata] = getObjectIdsByObjectTypes(
-    transaction.changesObjects,
-    [`TreasuryCap<${tokenType}>`, `Metadata<${tokenType}>`],
-  );
+  const [Metadata] = getObjectIdsByObjectTypes(transaction.changesObjects, [
+    `Metadata<${tokenType}>`,
+  ]);
 
   const txBuilder = new TxBuilder(client);
 
