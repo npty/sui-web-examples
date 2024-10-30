@@ -11,7 +11,7 @@ export type TransactionProps = {
 };
 
 function getExplorerUrl(tx: Transaction) {
-  if (!explorerUrl) return "https://suiscan.xyz/testnet/tx";
+  if (!explorerUrl) return "https://suiscan.xyz/testnet/tx/${tx.digest}";
   if (!explorerUrlExt) return `${explorerUrl}/${tx.digest}`;
   return `${explorerUrl}/${tx.digest}?${explorerUrlExt}`;
 }
