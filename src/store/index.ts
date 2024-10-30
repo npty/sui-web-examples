@@ -1,4 +1,4 @@
-import { SuiObjectChange } from "@mysten/sui/client";
+import { SuiEvent, SuiObjectChange } from "@mysten/sui/client";
 import { create } from "zustand";
 
 export type TransactionCategory =
@@ -11,6 +11,7 @@ export type Transaction = {
   digest: string;
   label: string;
   category: TransactionCategory;
+  events: SuiEvent[];
   changesObjects: SuiObjectChange[];
 };
 
@@ -24,21 +25,28 @@ export type Store = {
 export type ContractObject = {
   address: string;
   objects?: Record<string, string>;
+};
+
+export type ITSContractObject = ContractObject & {
+  trustedAddresses?: Record<string, string[]>;
+};
+
+export type GatewayContractObject = ContractObject & {
   domainSeparator?: string;
   operator?: string;
   minimumRotationDelay?: number;
-}
+};
 
 export type ChainContracts = {
-  AxelarGateway: ContractObject;
+  AxelarGateway: GatewayContractObject;
   Utils: ContractObject;
   VersionControl: ContractObject;
   GasService: ContractObject;
   Abi: ContractObject;
   RelayerDiscovery: ContractObject;
-  ITS: ContractObject;
+  ITS: ITSContractObject;
   Example: ContractObject;
-}
+};
 
 export type ChainConfig = {
   name: string;
@@ -48,7 +56,7 @@ export type ChainConfig = {
   rpc: string;
   faucetUrl: string;
   contracts: ChainContracts;
-}
+};
 
 export const useAppStore = create<Store>((set) => ({
   transactions: [],
