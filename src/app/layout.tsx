@@ -6,6 +6,7 @@ import Provider from "@/components/provider";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Sidebar } from "@/components/sidebar";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -45,6 +46,7 @@ export default function RootLayout({
             <Footer />
           </div>
         </Provider>
+        <ToastContainer />
       </body>
     </html>
   );

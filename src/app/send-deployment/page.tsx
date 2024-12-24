@@ -8,9 +8,17 @@ import { getRegisterTokenTx } from "@/transactions/register-token";
 import { getSendTokenDeploymentTx } from "@/transactions/send-token-deployment";
 import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
 import { SuiTransactionBlockResponse } from "@mysten/sui/client";
+import { toast } from "react-toastify";
 import { useStep } from "usehooks-ts";
-
+import {
+  AxelarGMPRecoveryAPI,
+  Environment,
+} from "@axelar-network/axelarjs-sdk";
 const transactionType = "send-deployment";
+
+const api: AxelarGMPRecoveryAPI = new AxelarGMPRecoveryAPI({
+  environment: Environment.DEVNET,
+});
 
 export default function SendDeployment() {
   const account = useCurrentAccount();
@@ -30,6 +38,24 @@ export default function SendDeployment() {
       onClick: handleSendTokenDeployment,
     },
   ];
+  //
+  // async function estimateMultihopFees() {
+  //   if (!account || !chainConfig) return;
+  //
+  //   const transaction = await api.addGasToSuiChain({
+  //     gasParams: "0x",
+  //     messageId: "test-1",
+  //     refundAddress: account?.address,
+  //     amount: "10000000",
+  //   });
+  //
+  //   console.log(transaction);
+  //
+  //   signAndExecute(transaction, {
+  //     onSuccess: (tx) => console.log("Success", tx),
+  //   });
+  // }
+  //
 
   async function handleRegisterToken() {
     if (!account) return;
@@ -42,6 +68,8 @@ export default function SendDeployment() {
       "TT",
       transactions,
     );
+
+    console.log(transaction);
 
     if (!transaction) return;
 
@@ -61,6 +89,7 @@ export default function SendDeployment() {
     );
 
     signAndExecute(transaction, {
+      onError: (e) => toast.error(`Transaction Failed ${e}`),
       onSuccess: updateTransaction,
     });
   }
@@ -85,6 +114,9 @@ export default function SendDeployment() {
   }
 
   function updateTransaction(result: SuiTransactionBlockResponse) {
+    toast.success(
+      `Transaction at step ${currentStep} is Successful ${result.digest}`,
+    );
     addTransaction({
       digest: result.digest,
       label: actions[currentStep - 1].name,

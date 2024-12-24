@@ -7,9 +7,10 @@ export const useChainConfig = () => {
 
   const loadChainConfig = useCallback(async () => {
     const response = await fetch("/api/chain-config");
+
     const chainConfig = await response.json();
 
-    setChainConfig(chainConfig.data);
+    setChainConfig(chainConfig.chains.sui);
   }, [setChainConfig]);
 
   useEffect(() => {
