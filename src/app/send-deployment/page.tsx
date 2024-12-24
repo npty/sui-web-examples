@@ -31,7 +31,30 @@ export default function SendDeployment() {
   const { signAndExecute } = useSuiTransaction();
 
   const actions = [
-    { name: "Deploy Token", onClick: handleDeployToken },
+    {
+      name: "Deploy Token",
+      onClick: handleDeployToken,
+      params: [
+        {
+          label: "Token Name",
+          type: "text",
+          id: "tokenName",
+          placeholder: "Enter token name",
+        },
+        {
+          label: "Token Symbol",
+          type: "text",
+          id: "tokenSymbol",
+          placeholder: "Enter token symbol",
+        },
+        {
+          label: "Token Decimals",
+          type: "number",
+          id: "tokenDecimals",
+          placeholder: "Enter token decimals",
+        },
+      ],
+    },
     { name: "Register Token", onClick: handleRegisterToken },
     {
       name: "Send Token Deployment",

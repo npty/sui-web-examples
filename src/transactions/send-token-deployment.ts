@@ -29,8 +29,8 @@ export async function getSendTokenDeploymentTx(
   const packageId = publishedObject?.packageId;
   const tokenType = `${packageId}::${symbol.toLowerCase()}::${symbol.toUpperCase()}`;
 
-  // Fixed fee to 0.05 SUI for now
-  const feeUnitAmount = 5e7;
+  // Fixed fee to 0.02 SUI for now
+  const feeUnitAmount = 2e7;
   const ITS = chainConfig.contracts.ITS;
   const Example = chainConfig.contracts.Example;
   const AxelarGateway = chainConfig.contracts.AxelarGateway;
@@ -38,7 +38,10 @@ export async function getSendTokenDeploymentTx(
 
   if (!ITS.trustedAddresses) return undefined;
 
-  const destinationChain = Object.keys(ITS.trustedAddresses)[0];
+  // const destinationChain = Object.keys(ITS.trustedAddresses)[0];
+  const destinationChain = "optimism-sepolia";
+
+  console.log(destinationChain);
 
   if (
     !ITS?.objects ||
