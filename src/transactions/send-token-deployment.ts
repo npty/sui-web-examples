@@ -8,6 +8,7 @@ export async function getSendTokenDeploymentTx(
   client: SuiClient,
   sender: string,
   chainConfig: ChainConfig,
+  destinationChain: string,
   symbol: string,
   transactions: Transaction[],
 ): Promise<SuiTransaction | undefined> {
@@ -37,11 +38,6 @@ export async function getSendTokenDeploymentTx(
   const GasService = chainConfig.contracts.GasService;
 
   if (!ITS.trustedAddresses) return undefined;
-
-  // const destinationChain = Object.keys(ITS.trustedAddresses)[0];
-  const destinationChain = "optimism-sepolia";
-
-  console.log(destinationChain);
 
   if (
     !ITS?.objects ||

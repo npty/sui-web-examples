@@ -21,10 +21,11 @@ const api: AxelarGMPRecoveryAPI = new AxelarGMPRecoveryAPI({
   environment: Environment.DEVNET,
 });
 
-type TokenDetails = {
+type SendDeploymentDetails = {
   tokenName: string;
   tokenSymbol: string;
   tokenDecimals: number;
+  destinationChain: string;
 };
 
 export default function SendDeployment() {
@@ -36,12 +37,14 @@ export default function SendDeployment() {
   const chainConfig = useChainConfig();
   const {
     register: registerTokenDetails,
-    handleSubmit: handleSubmitTokenDetails,
-  } = useForm<TokenDetails>({
+    watch: watchTokenDetails,
+    handleSubmit: handleSubmitTokenDeployment,
+  } = useForm<SendDeploymentDetails>({
     defaultValues: {
       tokenName: "Apature",
       tokenSymbol: "APT",
       tokenDecimals: 9,
+      destinationChain: "optimism-sepolia",
     },
   });
 
@@ -50,7 +53,7 @@ export default function SendDeployment() {
   const actions = [
     {
       name: "Deploy Token",
-      onClick: handleSubmitTokenDetails(handleDeployToken),
+      onClick: handleSubmitTokenDeployment(handleDeployToken),
       value: registerTokenDetails,
       params: [
         {
@@ -76,7 +79,18 @@ export default function SendDeployment() {
     { name: "Register Token", onClick: handleRegisterToken },
     {
       name: "Send Token Deployment",
-      onClick: handleSendTokenDeployment,
+      onClick: handleSubmitTokenDeployment(handleSendTokenDeployment),
+      params: [
+        {
+          label: "Destination Chain",
+          type: "select",
+          id: "destinationChain",
+          options: chainConfig
+            ? Object.keys(chainConfig?.contracts?.ITS?.trustedAddresses || {})
+            : [],
+          placeholder: "Select destination chain",
+        },
+      ],
     },
   ];
   //
@@ -98,17 +112,17 @@ export default function SendDeployment() {
   // }
   //
 
-  async function handleRegisterToken(tokenDetails: TokenDetails) {
+  async function handleRegisterToken() {
     if (!account) return;
     if (!chainConfig) return;
 
-    console.log(tokenDetails);
+    const tokenSymbol = watchTokenDetails("tokenSymbol");
 
     const transaction = await getRegisterTokenTx(
       suiClient,
       account.address,
       chainConfig,
-      "TT",
+      tokenSymbol,
       transactions,
     );
 
@@ -121,7 +135,7 @@ export default function SendDeployment() {
     });
   }
 
-  async function handleDeployToken(data: TokenDetails) {
+  async function handleDeployToken(data: SendDeploymentDetails) {
     if (!account) return;
 
     const transaction = await getDeployTokenTx(
@@ -137,7 +151,7 @@ export default function SendDeployment() {
     });
   }
 
-  async function handleSendTokenDeployment() {
+  async function handleSendTokenDeployment(data: SendDeploymentDetails) {
     if (!account) return;
     if (!chainConfig) return;
 
@@ -145,7 +159,8 @@ export default function SendDeployment() {
       suiClient,
       account.address,
       chainConfig,
-      "TT",
+      data.destinationChain,
+      data.tokenSymbol,
       transactions,
     );
 
