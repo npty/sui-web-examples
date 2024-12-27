@@ -13,6 +13,7 @@ import { Button } from "./ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { StampOverlay } from "./ui/stamp-overlay";
 import { useEffect, useState } from "react";
+import type { UseFormRegister } from "react-hook-form";
 
 export type ActionParam = {
   label: string;
@@ -27,6 +28,7 @@ export type ActionParam = {
 export type Action = {
   name: string;
   onClick: () => void;
+  value?: UseFormRegister<Record<ActionParam["id"], string>>;
   params?: ActionParam[];
   complete?: boolean;
 };
@@ -46,7 +48,11 @@ export function Action({ action, index }: ActionProps) {
     }
   }, [action.complete]);
 
-  function renderActionParams(param: ActionParam, completed: boolean) {
+  function renderActionParams(
+    register: Action["value"],
+    param: ActionParam,
+    completed: boolean,
+  ) {
     switch (param.type) {
       case "text":
         return (
@@ -54,6 +60,7 @@ export function Action({ action, index }: ActionProps) {
             id={param.id}
             placeholder={param.placeholder}
             disabled={completed}
+            {...register?.(param.id)}
           />
         );
       case "number":
@@ -65,11 +72,12 @@ export function Action({ action, index }: ActionProps) {
             min={param.min}
             max={param.max}
             disabled={completed}
+            {...register?.(param.id)}
           />
         );
       case "select":
         return (
-          <Select disabled={completed}>
+          <Select disabled={completed} {...register?.(param.id)}>
             <SelectTrigger>
               <SelectValue placeholder={param.placeholder} />
             </SelectTrigger>
@@ -118,7 +126,11 @@ export function Action({ action, index }: ActionProps) {
                 >
                   {param.label}
                 </Label>
-                {renderActionParams(param, action.complete || false)}
+                {renderActionParams(
+                  action.value,
+                  param,
+                  action.complete || false,
+                )}
               </div>
             ))}
           </div>

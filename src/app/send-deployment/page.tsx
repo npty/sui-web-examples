@@ -15,10 +15,17 @@ import {
   Environment,
 } from "@axelar-network/axelarjs-sdk";
 const transactionType = "send-deployment";
+import { useForm } from "react-hook-form";
 
 const api: AxelarGMPRecoveryAPI = new AxelarGMPRecoveryAPI({
   environment: Environment.DEVNET,
 });
+
+type TokenDetails = {
+  tokenName: string;
+  tokenSymbol: string;
+  tokenDecimals: number;
+};
 
 export default function SendDeployment() {
   const account = useCurrentAccount();
@@ -27,13 +34,24 @@ export default function SendDeployment() {
   const addTransaction = useAppStore((state) => state.addTransaction);
   const transactions = useAppStore((state) => state.transactions);
   const chainConfig = useChainConfig();
+  const {
+    register: registerTokenDetails,
+    handleSubmit: handleSubmitTokenDetails,
+  } = useForm<TokenDetails>({
+    defaultValues: {
+      tokenName: "Apature",
+      tokenSymbol: "APT",
+      tokenDecimals: 9,
+    },
+  });
 
   const { signAndExecute } = useSuiTransaction();
 
   const actions = [
     {
       name: "Deploy Token",
-      onClick: handleDeployToken,
+      onClick: handleSubmitTokenDetails(handleDeployToken),
+      value: registerTokenDetails,
       params: [
         {
           label: "Token Name",
@@ -80,9 +98,11 @@ export default function SendDeployment() {
   // }
   //
 
-  async function handleRegisterToken() {
+  async function handleRegisterToken(tokenDetails: TokenDetails) {
     if (!account) return;
     if (!chainConfig) return;
+
+    console.log(tokenDetails);
 
     const transaction = await getRegisterTokenTx(
       suiClient,
@@ -101,14 +121,14 @@ export default function SendDeployment() {
     });
   }
 
-  async function handleDeployToken() {
+  async function handleDeployToken(data: TokenDetails) {
     if (!account) return;
 
     const transaction = await getDeployTokenTx(
       account.address,
-      "Test Token",
-      "TT",
-      9,
+      data.tokenName,
+      data.tokenSymbol,
+      data.tokenDecimals,
     );
 
     signAndExecute(transaction, {
