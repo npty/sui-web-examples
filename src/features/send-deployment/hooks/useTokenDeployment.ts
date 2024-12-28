@@ -81,7 +81,7 @@ export const useTokenDeployment = ({ onSuccess }: UseTokenDeploymentProps) => {
   return {
     form,
     handleDeployToken: form.handleSubmit(handleDeployToken),
-    handleRegisterToken,
+    handleRegisterToken: form.handleSubmit(handleRegisterToken),
     handleSendTokenDeployment: form.handleSubmit(handleSendTokenDeployment),
     chainConfig,
   };

@@ -4,17 +4,19 @@ import { useAppStore } from "@/store";
 import { SuiTransactionBlockResponse } from "@mysten/sui/client";
 import { toast } from "react-toastify";
 import { useStep } from "usehooks-ts";
-import {
-  AxelarGMPRecoveryAPI,
-  Environment,
-} from "@axelar-network/axelarjs-sdk";
+// import {
+//   AxelarGMPRecoveryAPI,
+//   Environment,
+// } from "@axelar-network/axelarjs-sdk";
 const transactionType = "send-deployment";
 import { useTokenDeployment } from "@/features/send-deployment/hooks/useTokenDeployment";
+import { Action } from "@/components/action";
+import { SendDeploymentDetails } from "@/features/types";
 
-const api: AxelarGMPRecoveryAPI = new AxelarGMPRecoveryAPI({
-  environment: Environment.DEVNET,
-});
-
+// const api: AxelarGMPRecoveryAPI = new AxelarGMPRecoveryAPI({
+//   environment: Environment.DEVNET,
+// });
+//
 export default function SendDeployment() {
   const [currentStep, helpers] = useStep(4);
   const {
@@ -25,7 +27,7 @@ export default function SendDeployment() {
     chainConfig,
   } = useTokenDeployment({ onSuccess: updateTransaction });
   const { addTransaction, transactions } = useAppStore();
-  const actions = [
+  const actions: Action<SendDeploymentDetails>[] = [
     {
       name: "Deploy Token",
       onClick: handleDeployToken,
@@ -51,7 +53,11 @@ export default function SendDeployment() {
         },
       ],
     },
-    { name: "Register Token", onClick: handleRegisterToken },
+    {
+      name: "Register Token",
+      value: form.register,
+      onClick: handleRegisterToken,
+    },
     {
       name: "Send Token Deployment",
       onClick: handleSendTokenDeployment,
@@ -61,8 +67,8 @@ export default function SendDeployment() {
           label: "Destination Chain",
           type: "select",
           id: "destinationChain",
-          options: chainConfig
-            ? Object.keys(chainConfig?.contracts?.ITS?.trustedAddresses || {})
+          options: chainConfig?.contracts.ITS.trustedAddresses
+            ? Object.keys(chainConfig.contracts.ITS.trustedAddresses)
             : [],
           placeholder: "Select destination chain",
         },

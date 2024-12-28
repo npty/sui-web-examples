@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Select,
   SelectTrigger,
@@ -13,33 +14,36 @@ import { Button } from "./ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { StampOverlay } from "./ui/stamp-overlay";
 import { useEffect, useState } from "react";
-import type { UseFormRegister } from "react-hook-form";
+import type { Path, UseFormRegister } from "react-hook-form";
 
-export type ActionParam = {
+export type ActionParam<T extends Record<string, any>> = {
   label: string;
   type: "text" | "number" | "select";
-  id: string;
+  id: Path<T>;
   options?: string[];
   placeholder?: string;
   max?: string;
   min?: string;
 };
 
-export type Action = {
+export type Action<T extends Record<string, any>> = {
   name: string;
   onClick: () => void;
-  value?: UseFormRegister<Record<ActionParam["id"], string>>;
-  params?: ActionParam[];
+  value?: UseFormRegister<T>;
+  params?: ActionParam<T>[];
   complete?: boolean;
 };
 
-export type ActionProps = {
+export type ActionProps<T extends Record<string, any>> = {
   className?: string;
   index: number;
-  action: Action;
+  action: Action<T>;
 };
 
-export function Action({ action, index }: ActionProps) {
+export function Action<T extends Record<string, any>>({
+  action,
+  index,
+}: ActionProps<T>) {
   const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
@@ -49,8 +53,8 @@ export function Action({ action, index }: ActionProps) {
   }, [action.complete]);
 
   function renderActionParams(
-    register: Action["value"],
-    param: ActionParam,
+    register: Action<T>["value"],
+    param: ActionParam<T>,
     completed: boolean,
   ) {
     switch (param.type) {

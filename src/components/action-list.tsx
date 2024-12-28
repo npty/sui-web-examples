@@ -2,13 +2,17 @@
 
 import { ListTodo } from "lucide-react";
 import { Action } from "./action";
+import { FieldValues } from "react-hook-form";
 
-export type ActionListProps = {
+export type ActionListProps<T extends FieldValues> = {
   className?: string;
-  actions: Action[];
+  actions: Action<T>[];
 };
 
-export function ActionList({ className, actions }: ActionListProps) {
+export function ActionList<T extends FieldValues>({
+  className,
+  actions,
+}: ActionListProps<T>) {
   return (
     <section className={className ?? ""}>
       <h2 className="text-lg font-semibold mb-4 flex items-center">
