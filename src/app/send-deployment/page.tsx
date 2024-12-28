@@ -1,12 +1,6 @@
 "use client";
 import { MainSection } from "@/components/main-section";
-import { useChainConfig } from "@/hooks/useChainConfig";
-import { useSuiTransaction } from "@/hooks/useSuiTransaction";
 import { useAppStore } from "@/store";
-import { getDeployTokenTx } from "@/transactions/deploy-token";
-import { getRegisterTokenTx } from "@/transactions/register-token";
-import { getSendTokenDeploymentTx } from "@/transactions/send-token-deployment";
-import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
 import { SuiTransactionBlockResponse } from "@mysten/sui/client";
 import { toast } from "react-toastify";
 import { useStep } from "usehooks-ts";
@@ -15,19 +9,11 @@ import {
   Environment,
 } from "@axelar-network/axelarjs-sdk";
 const transactionType = "send-deployment";
-import { useForm } from "react-hook-form";
 import { useTokenDeployment } from "@/features/send-deployment/hooks/useTokenDeployment";
 
 const api: AxelarGMPRecoveryAPI = new AxelarGMPRecoveryAPI({
   environment: Environment.DEVNET,
 });
-
-type SendDeploymentDetails = {
-  tokenName: string;
-  tokenSymbol: string;
-  tokenDecimals: number;
-  destinationChain: string;
-};
 
 export default function SendDeployment() {
   const [currentStep, helpers] = useStep(4);
