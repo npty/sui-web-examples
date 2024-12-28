@@ -16,6 +16,7 @@ import {
 } from "@axelar-network/axelarjs-sdk";
 const transactionType = "send-deployment";
 import { useForm } from "react-hook-form";
+import { useTokenDeployment } from "@/features/send-deployment/hooks/useTokenDeployment";
 
 const api: AxelarGMPRecoveryAPI = new AxelarGMPRecoveryAPI({
   environment: Environment.DEVNET,
@@ -29,32 +30,20 @@ type SendDeploymentDetails = {
 };
 
 export default function SendDeployment() {
-  const account = useCurrentAccount();
-  const suiClient = useSuiClient();
   const [currentStep, helpers] = useStep(4);
-  const addTransaction = useAppStore((state) => state.addTransaction);
-  const transactions = useAppStore((state) => state.transactions);
-  const chainConfig = useChainConfig();
   const {
-    register: registerTokenDetails,
-    watch: watchTokenDetails,
-    handleSubmit: handleSubmitTokenDeployment,
-  } = useForm<SendDeploymentDetails>({
-    defaultValues: {
-      tokenName: "Apature",
-      tokenSymbol: "APT",
-      tokenDecimals: 9,
-      destinationChain: "optimism-sepolia",
-    },
-  });
-
-  const { signAndExecute } = useSuiTransaction();
-
+    form,
+    handleRegisterToken,
+    handleDeployToken,
+    handleSendTokenDeployment,
+    chainConfig,
+  } = useTokenDeployment({ onSuccess: updateTransaction });
+  const { addTransaction, transactions } = useAppStore();
   const actions = [
     {
       name: "Deploy Token",
-      onClick: handleSubmitTokenDeployment(handleDeployToken),
-      value: registerTokenDetails,
+      onClick: handleDeployToken,
+      value: form.register,
       params: [
         {
           label: "Token Name",
@@ -79,7 +68,8 @@ export default function SendDeployment() {
     { name: "Register Token", onClick: handleRegisterToken },
     {
       name: "Send Token Deployment",
-      onClick: handleSubmitTokenDeployment(handleSendTokenDeployment),
+      onClick: handleSendTokenDeployment,
+      value: form.register,
       params: [
         {
           label: "Destination Chain",
@@ -111,65 +101,6 @@ export default function SendDeployment() {
   //   });
   // }
   //
-
-  async function handleRegisterToken() {
-    if (!account) return;
-    if (!chainConfig) return;
-
-    const tokenSymbol = watchTokenDetails("tokenSymbol");
-
-    const transaction = await getRegisterTokenTx(
-      suiClient,
-      account.address,
-      chainConfig,
-      tokenSymbol,
-      transactions,
-    );
-
-    console.log(transaction);
-
-    if (!transaction) return;
-
-    signAndExecute(transaction, {
-      onSuccess: updateTransaction,
-    });
-  }
-
-  async function handleDeployToken(data: SendDeploymentDetails) {
-    if (!account) return;
-
-    const transaction = await getDeployTokenTx(
-      account.address,
-      data.tokenName,
-      data.tokenSymbol,
-      data.tokenDecimals,
-    );
-
-    signAndExecute(transaction, {
-      onError: (e) => toast.error(`Transaction Failed ${e}`),
-      onSuccess: updateTransaction,
-    });
-  }
-
-  async function handleSendTokenDeployment(data: SendDeploymentDetails) {
-    if (!account) return;
-    if (!chainConfig) return;
-
-    const transaction = await getSendTokenDeploymentTx(
-      suiClient,
-      account.address,
-      chainConfig,
-      data.destinationChain,
-      data.tokenSymbol,
-      transactions,
-    );
-
-    if (!transaction) return;
-
-    signAndExecute(transaction, {
-      onSuccess: updateTransaction,
-    });
-  }
 
   function updateTransaction(result: SuiTransactionBlockResponse) {
     toast.success(
