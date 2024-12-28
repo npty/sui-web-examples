@@ -13,7 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const { networkConfig } = createNetworkConfig({
   localnet: { url: rpcUrl },
   mainnet: { url: getFullnodeUrl("mainnet") },
-  testnet: { url: getFullnodeUrl("testnet") },
+  testnet: { url: "https://sui-testnet-rpc.publicnode.com" },
 });
 const queryClient = new QueryClient();
 
@@ -24,7 +24,7 @@ export default function Provider({
 }>) {
   return (
     <QueryClientProvider client={queryClient}>
-      <SuiClientProvider networks={networkConfig} defaultNetwork="localnet">
+      <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
         <WalletProvider autoConnect={true}>{children}</WalletProvider>;
       </SuiClientProvider>
     </QueryClientProvider>

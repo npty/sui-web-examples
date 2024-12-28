@@ -10,8 +10,8 @@ export const StampOverlay = ({ text = "DONE", isActive = false }) => {
       <div
         className="
           border-4 border-green-500 text-green-500 
-          text-4xl font-bold px-8 py-2 
-          transform -rotate-[10deg]
+          text-4xl font-bold px-20 py-2 
+          transform -rotate-[17deg]
           bg-white/50
         "
       >

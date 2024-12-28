@@ -8,9 +8,8 @@ export function Navbar() {
       <h1 className="text-xl font-bold">Sui ITS Examples</h1>
 
       <div className="flex items-center gap-4">
-        <ConnectButton connectText={"Connect Wallet"} />
+        <ConnectButton connectText={"Connect Sui"} />
       </div>
     </nav>
   );
 }
-

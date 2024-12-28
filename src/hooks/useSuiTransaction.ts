@@ -30,10 +30,11 @@ export function useSuiTransaction() {
     options?: SignAndExecuteTransactionOptions,
   ) => {
     const { onSuccess, onError } = options || {};
+    const txJson = await tx.toJSON();
 
     signAndExecuteTransaction(
       {
-        transaction: tx,
+        transaction: txJson,
       },
       {
         onSuccess: (result) => {
