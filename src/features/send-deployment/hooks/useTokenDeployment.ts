@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { SendDeploymentDetails } from "@/features/types";
 import { useChainConfig } from "@/hooks/useChainConfig";
 import { useSuiTransaction } from "@/hooks/useSuiTransaction";
 import { useAppStore } from "@/store";
@@ -9,6 +8,7 @@ import { getRegisterTokenTx } from "@/transactions/register-token";
 import { getSendTokenDeploymentTx } from "@/transactions/send-token-deployment";
 import { useCurrentAccount, useSuiClient } from "@mysten/dapp-kit";
 import { SuiTransactionBlockResponse } from "@mysten/sui/client";
+import { SendDeploymentDetails } from "../types";
 
 export type UseTokenDeploymentProps = {
   onSuccess: (result: SuiTransactionBlockResponse) => void;
