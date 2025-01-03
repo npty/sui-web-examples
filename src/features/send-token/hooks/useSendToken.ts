@@ -8,7 +8,11 @@ import { SuiTransactionBlockResponse } from "@mysten/sui/client";
 import { SendTokenDetails } from "../types";
 import { getSendTokenTx } from "@/transactions/send-token";
 import { useEffect, useState } from "react";
-import { getEventDataByEventTypes, getObjectIdsByObjectTypes } from "@/lib/sui";
+import {
+  getEventDataByEventTypes,
+  getObjectIdsByObjectTypes,
+  getTokenTypeFromPublishedObject,
+} from "@/lib/sui";
 
 export type UseTokenDeploymentProps = {
   onSuccess: (result: SuiTransactionBlockResponse) => void;
@@ -70,15 +74,19 @@ export const useSendToken = ({ onSuccess }: UseTokenDeploymentProps) => {
         ["InterchainTokenDeploymentStarted"],
       );
       const destinationChain = deploymentEvent.destination_chain;
-      console.log("Destination chain", destinationChain)
+      console.log("Destination chain", destinationChain);
       form.setValue("destinationChain", destinationChain);
 
       const gas = 2e7;
+      const tokenType = getTokenTypeFromPublishedObject(
+        transaction.changesObjects,
+      );
 
       setSendTokenDetails({
         tokenId,
         treasuryCap: treasuryCapId,
         destinationChain,
+        tokenType,
         gas: gas.toString(),
       });
     }
@@ -92,8 +100,10 @@ export const useSendToken = ({ onSuccess }: UseTokenDeploymentProps) => {
       suiClient,
       account.address,
       chainConfig,
-      data,
-      transactions,
+      {
+        ...data,
+        ...sendTokenDetails,
+      },
     );
 
     if (!transaction) return;

@@ -1,8 +1,4 @@
-import {
-  buildTx,
-  findPublishedObject,
-  getObjectIdsByObjectTypes,
-} from "@/lib/sui";
+import { buildTx } from "@/lib/sui";
 import { ChainConfig, Transaction } from "@/store";
 import { SuiClient } from "@mysten/sui/client";
 import { Transaction as SuiTransaction } from "@mysten/sui/transactions";
@@ -18,7 +14,6 @@ export async function getSendTokenTx(
   sender: string,
   chainConfig: ChainConfig,
   sendTokenDetails: SendTokenDetails,
-  transactions: Transaction[],
 ): Promise<SuiTransaction | undefined> {
   const {
     tokenId,
@@ -29,6 +24,9 @@ export async function getSendTokenTx(
     destinationAddress,
     gas,
   } = sendTokenDetails;
+
+  console.log("sendTokenDetails", sendTokenDetails);
+
   const txBuilder = new TxBuilder(client);
 
   txBuilder.tx.setSenderIfNotSet(sender);
@@ -45,6 +43,10 @@ export async function getSendTokenTx(
     arguments: [treasuryCap, amount],
     typeArguments: [tokenType],
   });
+
+  const Gas = txBuilder.tx.splitCoins(txBuilder.tx.gas, [gas]);
+
+  console.log(tokenType);
 
   const Gateway = chainConfig.contracts.AxelarGateway;
   const GasService = chainConfig.contracts.GasService;
@@ -82,6 +84,7 @@ export async function getSendTokenTx(
   // TODO: fix this
   const args = [
     Example.objects.ItsSingleton,
+    ITS.objects.ITS,
     Gateway.objects.Gateway,
     GasService.objects.GasService,
     TokenId,
@@ -90,7 +93,7 @@ export async function getSendTokenTx(
     destinationAddress,
     "0x",
     sender,
-    gas,
+    Gas,
     "0x",
     CLOCK_PACKAGE_ID,
   ];

@@ -39,6 +39,25 @@ export const getEventDataByEventTypes = (
   });
 };
 
+export const getTokenTypeFromPublishedObject = (
+  objectChanges: SuiObjectChange[],
+) => {
+  const publishedObject = objectChanges.find(
+    (change) => change.type === "published",
+  );
+
+  if (!publishedObject) return undefined;
+
+  const packageId = publishedObject.packageId;
+  const moduleName = publishedObject.modules[0];
+
+  if (!moduleName) return undefined;
+
+  const tokenType = `${packageId}::${moduleName.toLowerCase()}::${moduleName.toUpperCase()}`;
+
+  return tokenType;
+};
+
 export async function buildTx(walletAddress: string, txBuilder: TxBuilder) {
   txBuilder.tx.setSender(walletAddress);
 
