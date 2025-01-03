@@ -46,8 +46,6 @@ export async function getSendTokenTx(
 
   const Gas = txBuilder.tx.splitCoins(txBuilder.tx.gas, [gas]);
 
-  console.log(tokenType);
-
   const Gateway = chainConfig.contracts.AxelarGateway;
   const GasService = chainConfig.contracts.GasService;
   const Example = chainConfig.contracts.Example;
@@ -61,26 +59,6 @@ export async function getSendTokenTx(
     throw new Error("Missing objects");
   }
 
-  // await txBuilder.moveCall({
-  //         target: `${Example.address}::its::send_interchain_transfer_call`,
-  //         arguments: [
-  //             objectIds.singleton,
-  //             objectIds.its,
-  //             objectIds.gateway,
-  //             objectIds.gasService,
-  //             TokenId,
-  //             Coin,
-  //             destinationChain,
-  //             destinationAddress,
-  //             '0x', // its token metadata
-  //             walletAddress,
-  //             gas,
-  //             '0x', // gas params
-  //             CLOCK_PACKAGE_ID,
-  //         ],
-  //         typeArguments: [ItsToken.typeArgument],
-  //     });
-  //
   // TODO: fix this
   const args = [
     Example.objects.ItsSingleton,
@@ -98,7 +76,6 @@ export async function getSendTokenTx(
     CLOCK_PACKAGE_ID,
   ];
 
-  console.log(args);
   await txBuilder.moveCall({
     target: `${Example.address}::its::send_interchain_transfer_call`,
     arguments: args,
