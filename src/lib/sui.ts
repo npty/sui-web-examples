@@ -1,5 +1,5 @@
 import { TxBuilder } from "@axelar-network/axelar-cgp-sui";
-import { SuiObjectChange } from "@mysten/sui/client";
+import { SuiEvent, SuiObjectChange } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";
 
 export const findPublishedObject = (objectChanges: SuiObjectChange[]) => {
@@ -24,6 +24,18 @@ export const getObjectIdsByObjectTypes = (
     }
 
     return objectId;
+  });
+};
+
+export const getEventDataByEventTypes = (
+  events: SuiEvent[],
+  eventTypes: string[],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): any[] => {
+  return eventTypes.map((eventType) => {
+    const event = events.find((event) => event.type.includes(eventType));
+
+    return event?.parsedJson;
   });
 };
 
