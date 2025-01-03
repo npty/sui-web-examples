@@ -24,8 +24,6 @@ export default function SendToken() {
     {
       name: "Send Token",
       onClick: handleSendToken,
-      value: form.register,
-      control: form.control,
       params: [
         {
           label: "Token Id",
@@ -96,10 +94,13 @@ export default function SendToken() {
       transactions={transactions.filter(
         (tx) => tx.category === transactionType,
       )}
-      actions={actions.map((action, index) => ({
-        ...action,
-        complete: index < currentStep - 1,
-      }))}
+      actionDetails={{
+        form,
+        actions: actions.map((action, index) => ({
+          ...action,
+          complete: index < currentStep - 1,
+        })),
+      }}
     />
   );
 }

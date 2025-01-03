@@ -14,7 +14,7 @@ import { Button } from "./ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { StampOverlay } from "./ui/stamp-overlay";
 import { useEffect, useState } from "react";
-import type { Control, Path, UseFormRegister } from "react-hook-form";
+import type { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import { Controller } from "react-hook-form";
 
 export type ActionParam<T extends Record<string, any>> = {
@@ -27,23 +27,23 @@ export type ActionParam<T extends Record<string, any>> = {
   min?: string;
 };
 
-export type Action<T extends Record<string, any>> = {
+export type Action<T extends FieldValues> = {
   name: string;
   onClick: () => void;
-  control: Control<T>;
-  value?: UseFormRegister<T>;
   params?: ActionParam<T>[];
   complete?: boolean;
 };
 
-export type ActionProps<T extends Record<string, any>> = {
+export type ActionProps<T extends FieldValues> = {
   className?: string;
   index: number;
+  form: UseFormReturn<T>;
   action: Action<T>;
 };
 
-export function Action<T extends Record<string, any>>({
+export function Action<T extends FieldValues>({
   action,
+  form,
   index,
 }: ActionProps<T>) {
   const [isOpen, setIsOpen] = useState(true);
@@ -55,11 +55,10 @@ export function Action<T extends Record<string, any>>({
   }, [action.complete]);
 
   function renderActionParams(
-    register: Action<T>["value"],
     param: ActionParam<T>,
     completed: boolean,
-    control?: Control<T>,
   ) {
+    const { register, control } = form;
     switch (param.type) {
       case "text":
         return (
@@ -140,10 +139,8 @@ export function Action<T extends Record<string, any>>({
                   {param.label}
                 </Label>
                 {renderActionParams(
-                  action.value,
                   param,
                   action.complete || false,
-                  action.control,
                 )}
               </div>
             ))}

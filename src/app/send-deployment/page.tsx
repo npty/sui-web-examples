@@ -37,8 +37,6 @@ export default function SendDeployment() {
     {
       name: "Deploy Token",
       onClick: handleDeployToken,
-      value: form.register,
-      control: form.control,
       params: [
         {
           label: "Token Name",
@@ -62,15 +60,11 @@ export default function SendDeployment() {
     },
     {
       name: "Register Token",
-      value: form.register,
-      control: form.control,
       onClick: handleRegisterToken,
     },
     {
       name: "Send Token Deployment",
       onClick: handleSendTokenDeployment,
-      value: form.register,
-      control: form.control,
       params: [
         {
           label: "Destination Chain",
@@ -129,10 +123,13 @@ export default function SendDeployment() {
       transactions={transactions.filter(
         (tx) => tx.category === transactionType,
       )}
-      actions={actions.map((action, index) => ({
-        ...action,
-        complete: index < currentStep - 1,
-      }))}
+      actionDetails={{
+        form,
+        actions: actions.map((action, index) => ({
+          ...action,
+          complete: index < currentStep - 1,
+        })),
+      }}
     />
   );
 }
