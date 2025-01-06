@@ -1,10 +1,9 @@
 import { buildTx } from "@/lib/sui";
-import { ChainConfig, Transaction } from "@/store";
+import { ChainConfig } from "@/store";
 import { SuiClient } from "@mysten/sui/client";
 import { Transaction as SuiTransaction } from "@mysten/sui/transactions";
 import {
   CLOCK_PACKAGE_ID,
-  SUI_PACKAGE_ID,
   TxBuilder,
 } from "@axelar-network/axelar-cgp-sui";
 import { SendTokenDetails } from "@/features/send-token/types";
@@ -17,53 +16,41 @@ export async function getSendTokenTx(
 ): Promise<SuiTransaction | undefined> {
   const {
     tokenId,
-    treasuryCap,
     tokenType,
     amount,
     destinationChain,
     destinationAddress,
     gas,
+    coinObjectId,
   } = sendTokenDetails;
 
-  console.log("sendTokenDetails", sendTokenDetails);
-
-  const txBuilder = new TxBuilder(client);
-
-  txBuilder.tx.setSenderIfNotSet(sender);
-
-  const ITS = chainConfig.contracts.ITS;
-
-  const TokenId = await txBuilder.moveCall({
-    target: `${ITS.address}::token_id::from_u256`,
-    arguments: [tokenId],
-  });
-
-  const Coin = await txBuilder.moveCall({
-    target: `${SUI_PACKAGE_ID}::coin::mint`,
-    arguments: [treasuryCap, amount],
-    typeArguments: [tokenType],
-  });
-
-  const Gas = txBuilder.tx.splitCoins(txBuilder.tx.gas, [gas]);
-
-  const Gateway = chainConfig.contracts.AxelarGateway;
-  const GasService = chainConfig.contracts.GasService;
-  const Example = chainConfig.contracts.Example;
-
+  const { ITS, Example, AxelarGateway, GasService } = chainConfig.contracts;
   if (
     !ITS.objects ||
     !Example.objects ||
-    !Gateway.objects ||
+    !AxelarGateway.objects ||
     !GasService.objects
   ) {
     throw new Error("Missing objects");
   }
 
-  // TODO: fix this
+  const txBuilder = new TxBuilder(client);
+  const tx = txBuilder.tx;
+
+  // split coins for gas
+  const Gas = tx.splitCoins(tx.gas, [gas]);
+
+  // split token to transfer to the destination chain
+  const Coin = tx.splitCoins(coinObjectId, [amount]);
+  const TokenId = await txBuilder.moveCall({
+    target: `${ITS.address}::token_id::from_u256`,
+    arguments: [tokenId],
+  });
+
   const args = [
     Example.objects.ItsSingleton,
     ITS.objects.ITS,
-    Gateway.objects.Gateway,
+    AxelarGateway.objects.Gateway,
     GasService.objects.GasService,
     TokenId,
     Coin,
