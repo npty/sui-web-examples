@@ -3,4 +3,5 @@ export type SendDeploymentDetails = {
   tokenSymbol: string;
   tokenDecimals: number;
   destinationChain: string;
+  initialSupply: string;
 };

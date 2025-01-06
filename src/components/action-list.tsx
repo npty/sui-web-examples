@@ -2,16 +2,21 @@
 
 import { ListTodo } from "lucide-react";
 import { Action } from "./action";
-import { FieldValues } from "react-hook-form";
+import { FieldValues, UseFormReturn } from "react-hook-form";
 
 export type ActionListProps<T extends FieldValues> = {
   className?: string;
+  actionDetails: ActionDetails<T>;
+};
+
+export type ActionDetails<T extends FieldValues> = {
+  form: UseFormReturn<T>;
   actions: Action<T>[];
 };
 
 export function ActionList<T extends FieldValues>({
   className,
-  actions,
+  actionDetails,
 }: ActionListProps<T>) {
   return (
     <section className={className ?? ""}>
@@ -21,8 +26,13 @@ export function ActionList<T extends FieldValues>({
       </h2>
 
       <div className="space-y-4">
-        {actions.map((action, index) => (
-          <Action key={index} action={action} index={index} />
+        {actionDetails.actions.map((action, index) => (
+          <Action
+            key={index}
+            form={actionDetails.form}
+            action={action}
+            index={index}
+          />
         ))}
       </div>
     </section>

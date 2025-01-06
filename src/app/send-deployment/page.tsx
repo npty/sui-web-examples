@@ -8,15 +8,17 @@ import { useStep } from "usehooks-ts";
 //   AxelarGMPRecoveryAPI,
 //   Environment,
 // } from "@axelar-network/axelarjs-sdk";
-const transactionType = "send-deployment";
 import { useTokenDeployment } from "@/features/send-deployment/hooks/useTokenDeployment";
 import { Action } from "@/components/action";
-import { SendDeploymentDetails } from "@/features/types";
+import { SendDeploymentDetails } from "@/features/send-deployment/types";
+import { useEffect } from "react";
 
 // const api: AxelarGMPRecoveryAPI = new AxelarGMPRecoveryAPI({
 //   environment: Environment.DEVNET,
 // });
 //
+//
+const transactionType = "send-deployment";
 export default function SendDeployment() {
   const [currentStep, helpers] = useStep(4);
   const {
@@ -27,11 +29,14 @@ export default function SendDeployment() {
     chainConfig,
   } = useTokenDeployment({ onSuccess: updateTransaction });
   const { addTransaction, transactions } = useAppStore();
+  const pageTransactions = transactions.filter(
+    (tx) => tx.category === transactionType,
+  );
+
   const actions: Action<SendDeploymentDetails>[] = [
     {
       name: "Deploy Token",
       onClick: handleDeployToken,
-      value: form.register,
       params: [
         {
           label: "Token Name",
@@ -55,13 +60,19 @@ export default function SendDeployment() {
     },
     {
       name: "Register Token",
-      value: form.register,
       onClick: handleRegisterToken,
+      params: [
+        {
+          label: "Initial Supply",
+          type: "number",
+          id: "initialSupply",
+          placeholder: "Enter initial supply",
+        },
+      ],
     },
     {
       name: "Send Token Deployment",
       onClick: handleSendTokenDeployment,
-      value: form.register,
       params: [
         {
           label: "Destination Chain",
@@ -75,7 +86,12 @@ export default function SendDeployment() {
       ],
     },
   ];
-  //
+
+  useEffect(() => {
+    // reset step when navigating back from another page
+    helpers.setStep(pageTransactions.length + 1);
+  }, [pageTransactions, helpers]);
+
   // async function estimateMultihopFees() {
   //   if (!account || !chainConfig) return;
   //
@@ -98,6 +114,7 @@ export default function SendDeployment() {
     toast.success(
       `Transaction at step ${currentStep} is Successful ${result.digest}`,
     );
+    console.log("current step", currentStep);
     addTransaction({
       digest: result.digest,
       label: actions[currentStep - 1].name,
@@ -114,10 +131,13 @@ export default function SendDeployment() {
       transactions={transactions.filter(
         (tx) => tx.category === transactionType,
       )}
-      actions={actions.map((action, index) => ({
-        ...action,
-        complete: index < currentStep - 1,
-      }))}
+      actionDetails={{
+        form,
+        actions: actions.map((action, index) => ({
+          ...action,
+          complete: index < currentStep - 1,
+        })),
+      }}
     />
   );
 }
