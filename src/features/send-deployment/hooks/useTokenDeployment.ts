@@ -27,6 +27,7 @@ export const useTokenDeployment = ({ onSuccess }: UseTokenDeploymentProps) => {
       tokenSymbol: "APT",
       tokenDecimals: 9,
       destinationChain: "optimism-sepolia",
+      initialSupply: "100000",
     },
   });
 
@@ -35,9 +36,7 @@ export const useTokenDeployment = ({ onSuccess }: UseTokenDeploymentProps) => {
 
     const transaction = await getDeployTokenTx(
       account.address,
-      data.tokenName,
-      data.tokenSymbol,
-      data.tokenDecimals,
+      data
     );
 
     signAndExecute(transaction, {
@@ -46,15 +45,19 @@ export const useTokenDeployment = ({ onSuccess }: UseTokenDeploymentProps) => {
     });
   };
 
-  const handleRegisterToken = async () => {
+  const handleRegisterToken = async (data: SendDeploymentDetails) => {
     if (!account || !chainConfig) return;
-    const tokenSymbol = form.watch("tokenSymbol");
+
+    const subunitInitialSupply = (BigInt(data.initialSupply) * (BigInt(10 ** data.tokenDecimals))).toString();
 
     const transaction = await getRegisterTokenTx(
       suiClient,
       account.address,
       chainConfig,
-      tokenSymbol,
+      {
+        ...data,
+        initialSupply: subunitInitialSupply,
+      },
       transactions,
     );
 
