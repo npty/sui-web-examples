@@ -61,6 +61,14 @@ export default function SendDeployment() {
     {
       name: "Register Token",
       onClick: handleRegisterToken,
+      params: [
+        {
+          label: "Initial Supply",
+          type: "number",
+          id: "initialSupply",
+          placeholder: "Enter initial supply",
+        },
+      ],
     },
     {
       name: "Send Token Deployment",
