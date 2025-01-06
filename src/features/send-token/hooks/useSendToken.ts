@@ -114,7 +114,6 @@ export const useSendToken = ({ onSuccess }: UseTokenDeploymentProps) => {
       coinType: sendTokenDetails.tokenType,
     });
     const coinObjectId = coins.data[0].coinObjectId;
-    console.log("coinObjectId", coinObjectId);
 
     const transaction = await getSendTokenTx(
       suiClient,

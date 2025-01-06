@@ -2,10 +2,8 @@
 
 import { Action } from "@/components/action";
 import { MainSection } from "@/components/main-section";
-import { useTokenDeployment } from "@/features/send-deployment/hooks/useTokenDeployment";
 import { useSendToken } from "@/features/send-token/hooks/useSendToken";
-import { SendDeploymentDetails } from "@/features/types";
-import { getObjectIdsByObjectTypes } from "@/lib/sui";
+import { SendTokenDetails } from "@/features/send-token/types";
 import { useAppStore } from "@/store";
 import { SuiTransactionBlockResponse } from "@mysten/sui/client";
 import { useEffect } from "react";
@@ -20,7 +18,7 @@ export default function SendToken() {
     onSuccess: updateTransaction,
   });
 
-  const actions: Action<SendDeploymentDetails>[] = [
+  const actions: Action<SendTokenDetails>[] = [
     {
       name: "Send Token",
       onClick: handleSendToken,
