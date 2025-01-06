@@ -2,10 +2,7 @@ import { buildTx } from "@/lib/sui";
 import { ChainConfig } from "@/store";
 import { SuiClient } from "@mysten/sui/client";
 import { Transaction as SuiTransaction } from "@mysten/sui/transactions";
-import {
-  CLOCK_PACKAGE_ID,
-  TxBuilder,
-} from "@axelar-network/axelar-cgp-sui";
+import { CLOCK_PACKAGE_ID, TxBuilder } from "@axelar-network/axelar-cgp-sui";
 import { SendTokenDetails } from "@/features/send-token/types";
 
 export async function getSendTokenTx(

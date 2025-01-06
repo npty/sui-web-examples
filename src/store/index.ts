@@ -4,8 +4,6 @@ import { create } from "zustand";
 export type TransactionCategory =
   | "send-deployment"
   | "send-token"
-  | "receive-token"
-  | "receive-deployment";
 
 export type Transaction = {
   digest: string;

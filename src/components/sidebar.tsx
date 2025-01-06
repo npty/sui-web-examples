@@ -1,30 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { Send, SendToBack, Upload, Download } from "lucide-react";
+import { Send, Upload } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
 
 const examples = [
-  {
-    name: "Send Token",
-    icon: <Send className="w-4 h-4 mr-2" />,
-    link: "/send-token",
-  },
-  {
-    name: "Receive Token",
-    icon: <SendToBack className="w-4 h-4 mr-2" strokeWidth={1.5} />,
-    link: "/receive-token",
-  },
   {
     name: "Send Deployment",
     icon: <Upload className="w-4 h-4 mr-2" />,
     link: "/send-deployment",
   },
   {
-    name: "Receive Deployment",
-    icon: <Download className="w-4 h-4 mr-2" />,
-    link: "/receive-deployment",
+    name: "Send Token",
+    icon: <Send className="w-4 h-4 mr-2" />,
+    link: "/send-token",
   },
 ];
 
@@ -54,4 +44,3 @@ export function Sidebar() {
     </aside>
   );
 }
-
