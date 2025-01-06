@@ -6,4 +6,5 @@ export type SendTokenDetails = {
   destinationChain: string;
   destinationAddress: string;
   gas: string;
+  coinObjectId: string;
 };

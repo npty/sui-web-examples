@@ -95,6 +95,26 @@ export const useSendToken = ({ onSuccess }: UseTokenDeploymentProps) => {
   const handleSendToken = async (data: SendTokenDetails) => {
     if (!account) return;
     if (!chainConfig) return;
+    if (!sendTokenDetails?.tokenType) return;
+
+    const metadata = await suiClient.getCoinMetadata({
+      coinType: sendTokenDetails.tokenType,
+    });
+
+    const decimals = metadata?.decimals;
+    if (!decimals) return;
+
+    const tx = transactions.find((tx) => tx.label === "Deploy Token");
+    if (!tx) return;
+
+    console.log("tx", tx);
+
+    const coins = await suiClient.getCoins({
+      owner: account.address,
+      coinType: sendTokenDetails.tokenType,
+    });
+    const coinObjectId = coins.data[0].coinObjectId;
+    console.log("coinObjectId", coinObjectId);
 
     const transaction = await getSendTokenTx(
       suiClient,
@@ -103,6 +123,8 @@ export const useSendToken = ({ onSuccess }: UseTokenDeploymentProps) => {
       {
         ...data,
         ...sendTokenDetails,
+        coinObjectId,
+        amount: (BigInt(data.amount) * BigInt(10 ** decimals)).toString(),
       },
     );
 
