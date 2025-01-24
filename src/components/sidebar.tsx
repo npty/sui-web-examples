@@ -22,18 +22,25 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-muted p-4 hidden md:block">
-      <h2 className="font-semibold mb-4">Examples</h2>
-      <ul className="space-y-2">
+    <aside className="w-64 bg-background border-r p-6 hidden md:block">
+      <div className="flex items-center h-12 mb-2">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">
+          Examples
+        </h2>
+      </div>
+      <ul className="space-y-1">
         {examples.map((example, index) => (
           <li key={index}>
             <Link
               href={example.link}
-              className={clsx({
-                "flex items-center gap-2 text-black-500 hover:text-black-700 hover:cursor":
-                  true,
-                "text-blue-500": pathname === example.link,
-              })}
+              className={clsx(
+                "flex items-center px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
+                {
+                  "text-foreground/80 hover:bg-accent hover:text-foreground":
+                    pathname !== example.link,
+                  "bg-accent text-foreground": pathname === example.link,
+                },
+              )}
             >
               {example.icon}
               {example.name}
