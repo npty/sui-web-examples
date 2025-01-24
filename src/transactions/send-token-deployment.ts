@@ -12,20 +12,38 @@ export async function getSendTokenDeploymentTx(
   symbol: string,
   transactions: Transaction[],
 ): Promise<SuiTransaction | undefined> {
+  interface RegisterTokenEvent {
+    token_id: {
+      id: string;
+    };
+  }
+
   const registerTokenTx = transactions.find(
     (tx) => tx.label === "Register Token",
   );
-  if (!registerTokenTx) return undefined;
+  if (!registerTokenTx) {
+    throw new Error("Register Token transaction not found");
+  }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tokenId = (registerTokenTx?.events[0]?.parsedJson as any).token_id?.id;
-  if (!tokenId) return undefined;
+  const firstEvent = registerTokenTx.events[0];
+  if (!firstEvent?.parsedJson) {
+    throw new Error("Invalid transaction event data");
+  }
+
+  const tokenId = (firstEvent.parsedJson as RegisterTokenEvent).token_id?.id;
+  if (!tokenId) {
+    throw new Error("Token ID not found in transaction events");
+  }
 
   const deployTokenTx = transactions.find((tx) => tx.label === "Deploy Token");
-  if (!deployTokenTx) return undefined;
+  if (!deployTokenTx) {
+    throw new Error("Deploy Token transaction not found");
+  }
 
   const publishedObject = findPublishedObject(deployTokenTx.changesObjects);
-  if (!publishedObject) return undefined;
+  if (!publishedObject) {
+    throw new Error("Published object not found in transaction changes");
+  }
 
   const packageId = publishedObject?.packageId;
   const tokenType = `${packageId}::${symbol.toLowerCase()}::${symbol.toUpperCase()}`;
