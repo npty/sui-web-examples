@@ -135,6 +135,7 @@ export default function SendDeployment() {
         form,
         actions: actions.map((action, index) => ({
           ...action,
+          enabled: currentStep > index,
           complete: index < currentStep - 1,
         })),
       }}
