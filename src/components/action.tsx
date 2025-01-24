@@ -86,10 +86,9 @@ export function Action<T extends FieldValues>({
             control={control}
             render={({ field }) => (
               <Select
-                {...field}
                 disabled={completed}
-                value={field.value}
                 onValueChange={field.onChange}
+                value={field.value}
               >
                 <SelectTrigger>
                   <SelectValue placeholder={param.placeholder} />
