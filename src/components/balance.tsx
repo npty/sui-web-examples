@@ -64,7 +64,7 @@ export function Balance() {
 
       await updateBalance();
       toast.success("SUI tokens requested successfully");
-    } catch (error) {
+    } catch {
       toast.error("Error requesting SUI");
     } finally {
       setIsRequesting(false);
