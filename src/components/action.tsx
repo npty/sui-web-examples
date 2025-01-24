@@ -32,6 +32,7 @@ export type Action<T extends FieldValues> = {
   onClick: () => void;
   params?: ActionParam<T>[];
   complete?: boolean;
+  enabled?: boolean;
 };
 
 export type ActionProps<T extends FieldValues> = {
@@ -54,10 +55,7 @@ export function Action<T extends FieldValues>({
     }
   }, [action.complete]);
 
-  function renderActionParams(
-    param: ActionParam<T>,
-    completed: boolean,
-  ) {
+  function renderActionParams(param: ActionParam<T>, completed: boolean) {
     const { register, control } = form;
     switch (param.type) {
       case "text":
@@ -87,7 +85,11 @@ export function Action<T extends FieldValues>({
             name={param.id}
             control={control}
             render={({ field }) => (
-              <Select {...field} disabled={completed}>
+              <Select
+                disabled={completed}
+                onValueChange={field.onChange}
+                value={field.value}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder={param.placeholder} />
                 </SelectTrigger>
@@ -138,10 +140,7 @@ export function Action<T extends FieldValues>({
                 >
                   {param.label}
                 </Label>
-                {renderActionParams(
-                  param,
-                  action.complete || false,
-                )}
+                {renderActionParams(param, action.complete || false)}
               </div>
             ))}
           </div>
@@ -149,7 +148,7 @@ export function Action<T extends FieldValues>({
         <Button
           onClick={action.onClick}
           className="flex-1"
-          disabled={!!action.complete}
+          disabled={!!action.complete || !action.enabled}
         >
           Execute
         </Button>

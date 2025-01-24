@@ -3,6 +3,7 @@
 import { ListTodo } from "lucide-react";
 import { Action } from "./action";
 import { FieldValues, UseFormReturn } from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 export type ActionListProps<T extends FieldValues> = {
   className?: string;
@@ -19,11 +20,16 @@ export function ActionList<T extends FieldValues>({
   actionDetails,
 }: ActionListProps<T>) {
   return (
-    <section className={className ?? ""}>
-      <h2 className="text-lg font-semibold mb-4 flex items-center">
-        <ListTodo className="w-5 h-5 mr-2" />
-        Actions
-      </h2>
+    <section className={cn("space-y-6", className)}>
+      <div className="bg-background p-6 rounded-lg border">
+        <h2 className="text-xl font-semibold flex items-center">
+          <ListTodo className="w-6 h-6 mr-3 text-primary" />
+          Action Steps
+        </h2>
+        <p className="text-muted-foreground text-sm mt-2">
+          Follow these steps to complete the process
+        </p>
+      </div>
 
       <div className="space-y-4">
         {actionDetails.actions.map((action, index) => (

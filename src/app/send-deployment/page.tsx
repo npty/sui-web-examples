@@ -79,7 +79,9 @@ export default function SendDeployment() {
           type: "select",
           id: "destinationChain",
           options: chainConfig?.contracts.ITS.trustedAddresses
-            ? Object.keys(chainConfig.contracts.ITS.trustedAddresses)
+            ? Object.keys(chainConfig.contracts.ITS.trustedAddresses).filter(
+                (chain) => chain !== "axelar",
+              )
             : [],
           placeholder: "Select destination chain",
         },
@@ -135,6 +137,7 @@ export default function SendDeployment() {
         form,
         actions: actions.map((action, index) => ({
           ...action,
+          enabled: currentStep > index,
           complete: index < currentStep - 1,
         })),
       }}

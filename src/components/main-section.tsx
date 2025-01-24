@@ -13,9 +13,13 @@ export function MainSection<T extends FieldValues>({
   actionDetails,
 }: MainSectionProps<T>) {
   return (
-    <div className="flex flex-1 p-4">
-      <ActionList className="flex-1 mr-4" actionDetails={actionDetails} />
-      <TransactionList className="flex-1" transactions={transactions} />
+    <div className="flex flex-1 p-6 gap-6">
+      <div className="flex-1 bg-background rounded-lg p-6 shadow-sm">
+        <ActionList actionDetails={actionDetails} />
+      </div>
+      <div className="flex-1 bg-background rounded-lg border p-6 shadow-sm">
+        <TransactionList transactions={transactions} />
+      </div>
     </div>
   );
 }

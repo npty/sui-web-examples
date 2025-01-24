@@ -93,10 +93,18 @@ export const useSendToken = ({ onSuccess }: UseTokenDeploymentProps) => {
   }, [transactions, form]);
 
   const handleSendToken = async (data: SendTokenDetails) => {
-    if (!account) return;
-    if (!chainConfig) return;
-    if (!sendTokenDetails?.tokenType) return;
-
+    if (!account) {
+      toast.error("No account connected");
+      return;
+    }
+    if (!chainConfig) {
+      toast.error("Chain configuration not found");
+      return;
+    }
+    if (!sendTokenDetails?.tokenType) {
+      toast.error("Token type not found");
+      return;
+    }
     const metadata = await suiClient.getCoinMetadata({
       coinType: sendTokenDetails.tokenType,
     });
@@ -106,8 +114,6 @@ export const useSendToken = ({ onSuccess }: UseTokenDeploymentProps) => {
 
     const tx = transactions.find((tx) => tx.label === "Deploy Token");
     if (!tx) return;
-
-    console.log("tx", tx);
 
     const coins = await suiClient.getCoins({
       owner: account.address,
