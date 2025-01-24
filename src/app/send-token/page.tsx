@@ -13,7 +13,7 @@ import { useStep } from "usehooks-ts";
 const transactionType = "send-token";
 
 export default function SendToken() {
-  const [currentStep, helpers] = useStep(4);
+  const [currentStep, helpers] = useStep(1);
   const { form, handleSendToken, chainConfig } = useSendToken({
     onSuccess: updateTransaction,
   });
@@ -98,6 +98,7 @@ export default function SendToken() {
         form,
         actions: actions.map((action, index) => ({
           ...action,
+          enabled: currentStep > index,
           complete: index < currentStep - 1,
         })),
       }}
