@@ -48,7 +48,9 @@ export default function SendToken() {
           type: "select",
           id: "destinationChain",
           options: chainConfig?.contracts.ITS.trustedAddresses
-            ? Object.keys(chainConfig.contracts.ITS.trustedAddresses)
+            ? Object.keys(chainConfig.contracts.ITS.trustedAddresses).filter(
+                (chain) => chain !== "axelar",
+              )
             : [],
         },
         {
